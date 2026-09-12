@@ -26,3 +26,7 @@ dist-ssr
 # Playwright browsers / scratch
 test-results
 playwright-report
+.vercel
+
+# Vercel
+.vercel
