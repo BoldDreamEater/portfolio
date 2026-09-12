@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <pattern id="g" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0v48" fill="none" stroke="#ffffff" stroke-opacity="0.035" stroke-width="1"/>
+    </pattern>
+    <radialGradient id="glow" cx="50%" cy="28%" r="55%">
+      <stop offset="0%" stop-color="#4ea3ff" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#4ea3ff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#08090b"/>
+  <rect width="1200" height="630" fill="url(#g)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <text x="90" y="210" fill="#4ea3ff" font-family="ui-monospace,monospace" font-size="23" letter-spacing="5">ELECTRICAL ENGINEERING · AMU</text>
+  <text x="90" y="310" fill="#f4f7fa" font-family="Inter,system-ui,sans-serif" font-size="88" font-weight="650">Aman Javed</text>
+  <text x="90" y="378" fill="#aeb8c7" font-family="Inter,system-ui,sans-serif" font-size="35">Robotics · Control Systems · Embedded · PCB Design</text>
+  <g stroke="#2e3641" stroke-width="2" fill="none">
+    <rect x="90" y="452" width="170" height="62" rx="10"/>
+    <rect x="306" y="452" width="170" height="62" rx="10"/>
+    <rect x="522" y="452" width="170" height="62" rx="10"/>
+    <path d="M260 483 h40" marker-end="url(#a)"/>
+    <path d="M476 483 h40"/>
+  </g>
+  <g fill="#aeb8c7" font-family="ui-monospace,monospace" font-size="19" text-anchor="middle">
+    <text x="175" y="490">sensors</text>
+    <text x="391" y="490">control</text>
+    <text x="607" y="490">actuators</text>
+  </g>
+  <path d="M607 530 V568 H175 V530" fill="none" stroke="#4ea3ff" stroke-opacity="0.6" stroke-width="2" stroke-dasharray="7 9"/>
+  <text x="1110" y="568" fill="#5a6575" font-family="ui-monospace,monospace" font-size="19" text-anchor="end">github.com/BoldDreamEater</text>
+</svg>
