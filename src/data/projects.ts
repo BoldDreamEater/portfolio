@@ -28,7 +28,7 @@ export type Project = {
   results?: string[]
   links?: { label: string; href: string }[]
   images?: { src: string; alt: string; caption: string }[]
-  diagram?: 'luna' | 'lora' | 'eps' | 'fingerprint' | 'stepper' | 'micromouse'
+  diagram?: 'luna' | 'lora' | 'eps' | 'fingerprint' | 'stepper' | 'micromouse' | 'homer'
   sections?: DetailSection[]
 }
 
@@ -280,6 +280,106 @@ export const projects: Project[] = [
           'Half duplex ping-pong — two modules sharing one frequency',
           'Directional test modes — two modules, one direction at a time',
           'Loopback — no radio hardware at all, exercises the entire software stack internally',
+        ],
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────
+  {
+    slug: 'homer-tracker',
+    title: 'Homer',
+    subtitle: 'Fault-tolerant homing tracker with multi-network failover and BLE peer fusion',
+    oneLiner:
+      'An ESP32-S3 tracker that keeps reporting position even when GPS drops out and the network fails.',
+    year: '2026',
+    status: 'prototype',
+    statusNote: 'Working firmware across five iterations; hardware study documented',
+    featured: true,
+    diagram: 'homer',
+    summary:
+      'A location tracker built around the assumption that things fail. When GPS loses lock it falls back to estimating position from a BLE peer; when WiFi drops it falls back to GSM. Every transition is logged, failures are counted independently per transport, and the system restarts itself if both paths stay down.',
+    problem:
+      'A tracker that only works with a clear sky view and a good WiFi connection is not much of a tracker. GPS goes blind indoors and in urban canyons, 2G coverage is patchy and slow, and WiFi is not available in the field. Any one of those failing silently means the position stream just stops, with nothing to indicate why.',
+    approach:
+      'The design treats location source and network transport as two independent failover problems. For location, the device advertises its own fix over BLE while GPS is valid, and switches to scanning mode when GPS is lost — picking up a peer’s broadcast coordinates and estimating range from signal strength using the log-distance path loss model. For transport, uploads prefer WiFi and fall back to GSM over GPRS, with separate failure counters so a persistent fault in one path does not mask the other. Before integrating the SIM800L I ran a hardware study of it, because its power behaviour is the usual reason these builds fail.',
+    technologies: [
+      'Embedded C++',
+      'ESP32 Arduino framework',
+      'BLE (advertising + scanning)',
+      'HTTP over GPRS',
+      'AT command protocol',
+      'TinyGPS++',
+    ],
+    hardware: [
+      'ESP32-S3',
+      'NEO-6M GPS module',
+      'SIM800L GSM/GPRS module',
+      'MPU6050 IMU',
+      'WS2812 RGB status LED',
+    ],
+    software: [
+      'Location source state machine (GPS ↔ BLE peer)',
+      'Network arbitration layer (WiFi primary, GSM fallback)',
+      'BLE peer callback with RSSI range estimation',
+      'Per-transport failure counters and watchdog restart',
+      'PHP server endpoint for telemetry ingest',
+    ],
+    features: [
+      'Automatic failover from GPS to BLE peer-assisted positioning on signal loss',
+      'BLE role switches with GPS state: advertising while the fix is valid, scanning once it is lost',
+      'Range estimation from RSSI using the log-distance path loss model',
+      'WiFi-preferred upload with GSM/GPRS fallback and automatic WiFi reconnection',
+      'GSM network registration and GPRS attachment verified before upload is attempted',
+      'Independent WiFi and GSM failure counters, with a self-restart when both persist',
+      'Colour-coded RGB status LED showing the active transport at a glance',
+      'SMS reporting with a Google Maps link alongside 6-DOF motion data',
+    ],
+    contribution:
+      'I developed the firmware across five iterations — GPS acquisition, SMS reporting, IMU integration, the BLE peer layer, and the WiFi/GSM arbitration with status LEDs and failure recovery. I also carried out the SIM800L hardware study that informed the power and network design. This was a collaborative project; the initial GPRS server-upload path was contributed by a teammate.',
+    results: [
+      'Final firmware runs to roughly 510 lines with all failover paths implemented',
+      'SIM800L integration documented in a separate hardware test report',
+      'Verified BLE range estimation using a calibrated reference power of -59 dBm and a path loss exponent of 2.8',
+    ],
+    links: [
+      {
+        label: 'Repository (ESP32_GPS_GSM_MPU6050)',
+        href: 'https://github.com/BoldDreamEater/ESP32_GPS_GSM_MPU6050',
+      },
+    ],
+    sections: [
+      {
+        title: 'Location Source Arbitration',
+        body: 'The device treats GPS as primary and a BLE peer as the standby source, switching between them on a timeout rather than on a single bad reading.',
+        bullets: [
+          'GPS valid → the device advertises its own coordinates as BLE manufacturer data',
+          'GPS lost (timeout on fix age) → the device switches to BLE scanning',
+          'Incoming peer advertisements are length-checked before being parsed, so malformed packets are discarded',
+          'Peer range estimated as d = 10^((P_tx − RSSI) / 10n), with P_tx = −59 dBm and n = 2.8',
+          'Each upload carries the active source so the server knows whether a fix is GPS, peer-derived, or unavailable',
+        ],
+      },
+      {
+        title: 'Network Failover',
+        body: 'Transport selection is strictly prioritised and re-evaluated on every upload cycle, rather than being latched at boot.',
+        bullets: [
+          'WiFi is always preferred; the device re-checks and reconnects on an interval',
+          'GSM path validates network registration (AT+CREG?) and GPRS attachment (AT+CGATT=1) before attempting HTTP',
+          'HTTP transactions on GSM are driven through the SIM800L AT command set',
+          'WiFi and GSM failures are counted separately; a combined threshold triggers a full system restart',
+          'Every transport transition is logged for post-run diagnosis',
+        ],
+      },
+      {
+        title: 'SIM800L Hardware Study',
+        body: 'The SIM800L is notoriously unreliable when treated as a 5 V logic-level peripheral. I characterised it before designing it in, and documented the findings in a separate test report.',
+        bullets: [
+          'Operates at 3.8–4.2 V, not 5 V — a common integration mistake',
+          'Transmission bursts draw up to 2 A, demanding a low-noise supply with real current headroom',
+          'Decoupling and bulk current buffering identified as critical to avoiding brownout resets',
+          'Registration behaviour characterised across home and roaming states',
+          'Known limits accepted by design: 2G dependency, slow HTTP relative to WiFi, and throughput suited only to light payloads',
         ],
       },
     ],

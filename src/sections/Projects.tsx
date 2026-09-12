@@ -35,7 +35,7 @@ export function Projects() {
         id="projects"
         eyebrow="Projects"
         title="Selected engineering work"
-        lead="Eight projects spanning robotics, satellite power electronics, RF telemetry and bare-metal firmware. Open any card for the architecture, the reasoning and the honest status."
+        lead="Nine projects spanning robotics, satellite power electronics, RF telemetry and bare-metal firmware. Open any card for the architecture, the reasoning and the honest status."
       >
         <div className="grid gap-5 md:grid-cols-2">
           {projects.map((p) => (

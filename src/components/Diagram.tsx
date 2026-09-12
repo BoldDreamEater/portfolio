@@ -289,8 +289,51 @@ function MicromouseDiagram() {
   )
 }
 
+function HomerDiagram() {
+  return (
+    <Frame
+      viewBox="0 0 700 300"
+      caption="Homer's two independent failover paths. Location falls back from GPS to a BLE peer; transport falls back from WiFi to GSM. Each has its own failure counter, and a combined threshold restarts the device."
+    >
+      <text x="16" y="20" fill={C.dim} fontSize="10" fontFamily="ui-monospace, monospace">LOCATION SOURCE</text>
+      <rect x="12" y="28" width="300" height="120" rx="9" fill="none" stroke={C.stroke} strokeDasharray="3 4" />
+      <Box x={28} y={48} w={118} h={42} label="GPS (NEO-6M)" sub="primary" tone="signal" />
+      <Box x={28} y={98} w={118} h={38} label="BLE peer" sub="RSSI range" tone="warn" />
+      <Box x={182} y={68} w={112} h={48} label="arbiter" sub="fix timeout" tone="accent" />
+      <Arrow d="M146 69 H176" tone="signal" />
+      <Arrow d="M146 117 H176 V112" tone="default" />
+
+      <Box x={352} y={64} w={104} h={56} label="ESP32-S3" sub="+ MPU6050" tone="accent" />
+      <Arrow d="M294 92 H346" tone="accent" />
+
+      <text x="500" y="20" fill={C.dim} fontSize="10" fontFamily="ui-monospace, monospace">TRANSPORT</text>
+      <rect x="494" y="28" width="194" height="120" rx="9" fill="none" stroke={C.stroke} strokeDasharray="3 4" />
+      <Box x={510} y={48} w={162} h={42} label="WiFi" sub="preferred" tone="signal" />
+      <Box x={510} y={98} w={162} h={38} label="GSM / GPRS" sub="SIM800L fallback" tone="warn" />
+      <Arrow d="M456 80 H504" tone="accent" />
+      <Arrow d="M456 104 H504 V112" tone="default" />
+
+      <Box x={276} y={186} w={148} h={44} label="HTTP upload" sub="lat/lon, source, IMU" tone="accent" />
+      <Arrow d="M591 136 V208 H430" tone="accent" />
+
+      <text x="16" y="258" fill={C.dim} fontSize="10" fontFamily="ui-monospace, monospace">RELIABILITY</text>
+      <rect x="12" y="264" width="676" height="26" rx="7" fill="none" stroke={C.stroke} strokeDasharray="3 4" />
+      <text x="32" y="281" fill={C.dim} fontSize="9.5" fontFamily="ui-monospace, monospace">
+        independent WiFi / GSM fail counters
+      </text>
+      <text x="300" y="281" fill={C.dim} fontSize="9.5" fontFamily="ui-monospace, monospace">
+        transition logging
+      </text>
+      <text x="470" y="281" fill={C.warn} fontSize="9.5" fontFamily="ui-monospace, monospace">
+        combined threshold -&gt; ESP.restart()
+      </text>
+    </Frame>
+  )
+}
+
 const MAP = {
   luna: LunaDiagram,
+  homer: HomerDiagram,
   lora: LoraDiagram,
   eps: EpsDiagram,
   fingerprint: FingerprintDiagram,
