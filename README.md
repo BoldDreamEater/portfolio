@@ -43,9 +43,11 @@ array in `src/data/projects.ts` — no component changes needed.
 
 ## Updating the résumé
 
-Edit `resume-src/cv.html`, then regenerate the PDF:
+Edit `resume-src/cv.html`, then regenerate the PDF. The generator drives headless Chromium via
+Playwright, which is not a project dependency, so install it first:
 
 ```bash
+npm i -D playwright && npx playwright install chromium
 node resume-src/build-cv.mjs
 ```
 
