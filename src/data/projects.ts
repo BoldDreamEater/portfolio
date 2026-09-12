@@ -41,8 +41,8 @@ export const projects: Project[] = [
     oneLiner:
       'A wireless ESP32 robot running closed-loop PID control, sensor fusion and a simulation twin that shares one topic contract.',
     year: '2026',
-    status: 'active',
-    statusNote: 'Active development — hardware bring-up verified, autonomy tracks in progress',
+    status: 'complete',
+    statusNote: 'Complete — full sim-and-hardware stack verified on the real robot',
     featured: true,
     diagram: 'luna',
     summary:
@@ -87,7 +87,7 @@ export const projects: Project[] = [
     contribution:
       'Sole developer. I built the URDF model, the Gazebo world and bridge configuration, all four ROS 2 packages, and all three firmware variants — including the kinematics, the PID loops, the fusion filter and the safety logic. I also wrote the project’s standing implementation plan, which tracks every roadmap item with an honest status flag and records which work is blocked on hardware that does not exist yet.',
     results: [
-      'Hardware bring-up verified against the real ESP32 — phases 1 through 5 of the plan complete',
+      'Complete sim-and-hardware stack, verified against the real ESP32',
       'Wheel calibration measured on hardware: 0.049773 mm/tick (right), 0.050400 mm/tick (left)',
       'Mesh-derived and encoder-derived geometry agree: 120 mm track width, 22 mm wheel radius',
       'Fixed a mirror-mode failure where the simulation froze because the global /clock had no publisher',
