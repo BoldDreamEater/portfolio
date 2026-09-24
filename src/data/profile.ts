@@ -11,7 +11,7 @@ export const profile = {
   linkedin: 'https://linkedin.com/in/amanjaved',
   linkedinHandle: 'in/amanjaved',
   resumePath: `${import.meta.env.BASE_URL}docs/Aman_Javed_CV.pdf`,
-  resumeUpdated: 'February 2026',
+  resumeUpdated: 'September 2026',
 } as const
 
 export const about = {
@@ -159,6 +159,9 @@ export const skillCategories: SkillCategory[] = [
       { name: 'VL53L0X ToF', level: 'core' },
       { name: 'Quadrature encoders', level: 'core' },
       { name: 'LoRa (REYAX RYLR998)', level: 'core' },
+      { name: 'BLE (advertising & scanning)', level: 'core' },
+      { name: 'GSM / GPRS (SIM800L)', level: 'core' },
+      { name: 'GPS (NEO-6M)', level: 'core' },
       { name: 'I²C / SPI / UART', level: 'core' },
     ],
   },
