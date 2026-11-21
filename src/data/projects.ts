@@ -28,6 +28,8 @@ export type Project = {
   results?: string[]
   links?: { label: string; href: string }[]
   images?: { src: string; alt: string; caption: string }[]
+  /** Heading over `images`; defaults to "Project photographs". */
+  imagesHeading?: string
   /** Silent screen recordings. The first one also plays as the card's cover. */
   videos?: { src: string; poster: string; title: string; caption: string }[]
   diagram?: 'luna' | 'lora' | 'eps' | 'fingerprint' | 'stepper' | 'micromouse' | 'homer'
@@ -206,6 +208,39 @@ export const projects: Project[] = [
           'HAT base template for daughterboard standardisation',
           'Top, side and general-mounted solar panel boards',
         ],
+      },
+    ],
+    imagesHeading: 'Board renders',
+    images: [
+      {
+        src: 'projects/eps/motherboard.webp',
+        alt: '3D render of the EPS motherboard, a long narrow board with an STM32 microcontroller at its centre',
+        caption: 'EPS motherboard — STM32H743 supervisor, twelve MPPT channels and LTC4415 ideal-diode ORing',
+      },
+      {
+        src: 'projects/eps/battery-charger.webp',
+        alt: '3D render of the battery charger board with a large card-edge connector along one side',
+        caption: 'Battery Charger V2.2 — BQ25798 buck-boost charger, STC3100 fuel gauge and TPS2557 load switch',
+      },
+      {
+        src: 'projects/eps/escon-v2.5.webp',
+        alt: '3D render of the ESCON carrier board with three module footprints and three flat-flex connectors',
+        caption: 'ESCON carrier V2.5 — three maxon ESCON motor-controller slots driving the ADCS reaction wheels',
+      },
+      {
+        src: 'projects/eps/payload-v2.webp',
+        alt: '3D render of the payload board with a card-edge connector and a row of header pins',
+        caption: 'Payload V2.0 — MCP2515 CAN controller and L9615 transceiver behind a current-limited switch',
+      },
+      {
+        src: 'projects/eps/backplane-v3.webp',
+        alt: '3D render of the backplane with two buck converter circuits and four stacking connectors',
+        caption: 'Backplane V3 — two XL4015 buck rails (12 V → 5 V and 12 V → 3.3 V) and the inter-board stacking connectors',
+      },
+      {
+        src: 'projects/eps/solar-panel.webp',
+        alt: '3D render of a long solar panel PCB divided into a string of cell pads',
+        caption: 'Top-mounted solar panel board — the series cell string that feeds the MPPT inputs',
       },
     ],
   },

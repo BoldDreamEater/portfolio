@@ -141,7 +141,7 @@ export function ProjectDetails({ project, onClose }: Props) {
 
           {project.images && project.images.length > 0 && (
             <div>
-              <SubHeading>Project photographs</SubHeading>
+              <SubHeading>{project.imagesHeading ?? 'Project photographs'}</SubHeading>
               <div className="grid gap-4 sm:grid-cols-2">
                 {project.images.map((img) => (
                   <figure key={img.src} className="m-0">
