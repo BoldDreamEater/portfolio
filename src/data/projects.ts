@@ -96,6 +96,19 @@ export const projects: Project[] = [
       'Mesh-derived and encoder-derived geometry agree: 120 mm track width, 22 mm wheel radius',
       'Fixed a mirror-mode failure where the simulation froze because the global /clock had no publisher',
     ],
+    imagesHeading: 'CAD model',
+    images: [
+      {
+        src: 'projects/luna/luna-render.webp',
+        alt: '3D render of Luna: a rounded rectangular grey chassis with two drive wheels at the rear',
+        caption: 'Luna’s Fusion 360 chassis, rendered from the same STL meshes the URDF and the Gazebo twin load',
+      },
+      {
+        src: 'projects/luna/luna-plan.webp',
+        alt: 'Top-down plan view of Luna with dimension lines: 110 mm wide, 150 mm long, 120 mm track width',
+        caption: 'Plan view with the CAD dimensions the kinematics use: 150 × 110 mm chassis, 120 mm track width',
+      },
+    ],
     sections: [
       {
         title: 'System Architecture',
