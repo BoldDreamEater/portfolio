@@ -3,6 +3,8 @@ export const profile = {
   headline: 'Electrical Engineering student building robots, embedded systems and flight-grade hardware',
   intro:
     'I work at the boundary between hardware and software — ROS 2 robots with closed-loop control on bare-metal microcontrollers, custom PCBs from schematic to fabrication, and the RF links that hold it all together.',
+  heroBio:
+    'Robots, satellite power boards and the firmware between them, from KiCad schematics to ROS 2 on real hardware. Electrical Engineering at AMU, diploma gold medallist.',
   location: 'Aligarh, Uttar Pradesh, India',
   email: 'amanjaved0001@gmail.com',
   phone: '+91 9068139222',

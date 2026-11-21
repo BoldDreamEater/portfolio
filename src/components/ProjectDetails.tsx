@@ -3,6 +3,7 @@ import type { Project } from '../data/projects'
 import { statusLabels } from '../data/projects'
 import { StatusDot } from './StatusDot'
 import { Diagram } from './Diagram'
+import { profile } from '../data/profile'
 
 type Props = {
   project: Project | null
@@ -54,7 +55,7 @@ export function ProjectDetails({ project, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex animate-fade-in items-start justify-center overflow-y-auto overscroll-contain bg-ink-900/80 p-0 backdrop-blur-md sm:p-6"
+      className="fixed inset-0 z-[60] flex animate-fade-in items-stretch justify-start bg-black/45 p-0 sm:p-4 sm:pt-[4.5rem]"
       role="dialog"
       aria-modal="true"
       aria-labelledby="project-modal-title"
@@ -64,34 +65,32 @@ export function ProjectDetails({ project, onClose }: Props) {
     >
       <div
         ref={panelRef}
-        className="relative my-0 w-full max-w-3xl border border-white/[0.08] bg-ink-850 shadow-2xl sm:my-4 sm:rounded-2xl"
+        className="relative flex w-full max-w-[680px] animate-panel-in flex-col overflow-hidden border border-white/[0.08] bg-[#111111]/95 shadow-2xl backdrop-blur-xl sm:rounded-2xl"
       >
-        {/* Sticky header */}
-        <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-white/[0.07] bg-ink-850/95 px-5 py-4 backdrop-blur-xl sm:rounded-t-2xl sm:px-8 sm:py-5">
-          <div className="min-w-0">
-            <div className="mb-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
-              <StatusDot status={project.status} label={statusLabels[project.status]} />
-              <span className="font-mono text-[11px] text-slate-600">{project.year}</span>
-            </div>
-            <h2 id="project-modal-title" className="truncate text-xl font-semibold text-slate-50 sm:text-2xl">
-              {project.title}
-            </h2>
-            <p className="mt-0.5 text-sm text-slate-400">{project.subtitle}</p>
-          </div>
-          <button
-            ref={closeRef}
-            type="button"
-            onClick={onClose}
-            aria-label="Close project details"
-            className="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-white/[0.1] text-slate-400 transition-colors hover:border-white/[0.25] hover:text-slate-100"
-          >
-            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        {/* Close / copy link, then the title block */}
+        <div className="flex items-center justify-between gap-4 px-5 pt-5 sm:px-8 sm:pt-6">
+          <button ref={closeRef} type="button" onClick={onClose} className="pill !pl-2 !pr-4" aria-label="Close project details">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" className="ml-1">
+              <path d="M7.5 2.5L4 6l3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
+            Close
           </button>
+          <CopyLink slug={project.slug} />
         </div>
 
-        <div className="space-y-9 px-5 py-7 sm:px-8 sm:py-9">
+        <div className="flex-1 overflow-y-auto overscroll-contain">
+        <div className="px-5 pb-6 pt-7 sm:px-8">
+          <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+            <StatusDot status={project.status} label={statusLabels[project.status]} />
+            <span className="text-[12px] text-slate-500">{project.year}</span>
+          </div>
+          <h2 id="project-modal-title" className="display text-[clamp(2.2rem,5vw,3.25rem)] leading-[0.95]">
+            {project.title}
+          </h2>
+          <p className="mt-2 text-[14px] text-slate-400">{project.subtitle}</p>
+        </div>
+
+        <div className="space-y-9 px-5 pb-10 sm:px-8">
           {project.confidential && project.confidentialNote && (
             <div className="rounded-lg border border-amber-500/25 bg-amber-500/[0.06] p-4">
               <p className="mb-1.5 flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-amber-300">
@@ -243,13 +242,53 @@ export function ProjectDetails({ project, onClose }: Props) {
             )}
           </div>
         </div>
+        </div>
+
+        {/* Call to action, pinned to the bottom of the panel */}
+        <div className="m-3 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/[0.07] bg-[#1a1a1a] px-4 py-3 sm:m-4">
+          <p className="min-w-0">
+            <span className="block text-[11.5px] text-slate-500">Have something to build?</span>
+            <span className="display block text-[1.35rem] leading-tight">Let’s make the next one work.</span>
+          </p>
+          <div className="flex items-center gap-3">
+            <a href={`mailto:${profile.email}`} className="pill-solid">
+              Get in touch
+            </a>
+            <a href={profile.resumePath} className="text-[13px] text-slate-300 transition-colors hover:text-white" download>
+              Download CV
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   )
 }
 
 function SubHeading({ children }: { children: React.ReactNode }) {
-  return <h3 className="mb-3.5 font-mono text-[11px] uppercase tracking-[0.18em] text-accent">{children}</h3>
+  return <h3 className="mb-3.5 text-[12px] text-slate-500">{children}</h3>
+}
+
+/** Copies the project's deep link, then confirms for a moment. */
+function CopyLink({ slug }: { slug: string }) {
+  const [copied, setCopied] = useState(false)
+  const copy = async () => {
+    const url = `${window.location.origin}${window.location.pathname}#project/${slug}`
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopied(true)
+      window.setTimeout(() => setCopied(false), 1800)
+    } catch {
+      window.prompt('Copy this link', url)
+    }
+  }
+  return (
+    <button type="button" onClick={copy} className="pill !pr-4" aria-live="polite">
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true" className="-ml-1">
+        <path d="M6 8a2.5 2.5 0 003.5 0l2-2A2.5 2.5 0 008 2.5l-.5.5M8 6a2.5 2.5 0 00-3.5 0l-2 2A2.5 2.5 0 006 11.5l.5-.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+      </svg>
+      {copied ? 'Copied' : 'Copy link'}
+    </button>
+  )
 }
 
 function Prose({ title, body }: { title: string; body: string }) {

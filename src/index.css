@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -34,12 +34,12 @@
   }
 
   ::selection {
-    background: rgba(78, 163, 255, 0.28);
+    background: rgba(236, 235, 231, 0.22);
     color: #fff;
   }
 
   :focus-visible {
-    outline: 2px solid #4ea3ff;
+    outline: 2px solid #ecebe7;
     outline-offset: 3px;
     border-radius: 3px;
   }
@@ -88,7 +88,33 @@
   }
 
   .eyebrow {
-    @apply font-mono text-[11px] uppercase tracking-[0.2em] text-accent;
+    @apply text-[12px] text-slate-500;
+  }
+
+  /* Large italic serif used for names, titles and counters */
+  .display {
+    @apply font-display font-normal italic tracking-[-0.01em] text-[#f2f1ed];
+  }
+
+  /* Small label/value pair, as in the header columns */
+  .meta-label {
+    @apply block text-[11.5px] leading-tight text-slate-500;
+  }
+  .meta-value {
+    @apply block text-[12.5px] leading-tight text-slate-200;
+  }
+
+  /* White pill button with an icon chip */
+  .pill {
+    @apply inline-flex min-h-[40px] items-center gap-2.5 rounded-full border border-white/[0.16] bg-ink-900/60 py-1.5 pl-4 pr-1.5
+           text-[13px] text-slate-200 backdrop-blur transition-colors hover:border-white/[0.35] hover:text-white;
+  }
+  .pill-solid {
+    @apply inline-flex min-h-[36px] items-center gap-1.5 rounded-full bg-[#f2f1ed] px-4 py-1.5 text-[13px] font-medium text-ink-900
+           transition-colors hover:bg-white;
+  }
+  .pill-icon {
+    @apply grid h-7 w-7 place-items-center rounded-full border border-white/[0.2];
   }
 
   .btn {
@@ -97,11 +123,11 @@
   }
 
   .btn-primary {
-    @apply btn bg-accent text-ink-900 hover:bg-[#6bb4ff] active:scale-[0.98];
+    @apply btn rounded-full bg-accent text-ink-900 hover:bg-white active:scale-[0.98];
   }
 
   .btn-ghost {
-    @apply btn border border-white/[0.12] text-slate-200 hover:border-white/[0.28] hover:bg-white/[0.04] active:scale-[0.98];
+    @apply btn rounded-full border border-white/[0.14] text-slate-200 hover:border-white/[0.28] hover:bg-white/[0.04] active:scale-[0.98];
   }
 
   .link-underline {
@@ -135,7 +161,7 @@
 /* Thin scrollbar that matches the dark surface */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #2e3641 transparent;
+  scrollbar-color: #333333 transparent;
 }
 
 *::-webkit-scrollbar {
@@ -144,7 +170,7 @@
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: #222831;
+  background-color: #262626;
   border-radius: 8px;
   border: 3px solid transparent;
   background-clip: content-box;
@@ -152,4 +178,26 @@
 
 *::-webkit-scrollbar-thumb:hover {
   background-color: #2e3641;
+}
+
+/* Hero line: draws itself, holds, then erases and repeats. */
+.signature path {
+  stroke-dasharray: 4200;
+  stroke-dashoffset: 4200;
+  animation: signature-draw 9s cubic-bezier(0.65, 0, 0.35, 1) 0.9s infinite;
+}
+
+@keyframes signature-draw {
+  0% { stroke-dashoffset: 4200; }
+  45% { stroke-dashoffset: 0; }
+  70% { stroke-dashoffset: 0; opacity: 1; }
+  90% { stroke-dashoffset: -4200; opacity: 0.2; }
+  100% { stroke-dashoffset: -4200; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signature path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
 }

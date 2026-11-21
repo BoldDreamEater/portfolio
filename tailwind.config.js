@@ -4,28 +4,38 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Neutral near-black surfaces (no blue cast), after the reference design
         ink: {
-          900: '#08090b',
-          850: '#0b0d10',
-          800: '#101317',
-          700: '#171b21',
-          600: '#222831',
-          500: '#2e3641',
+          900: '#0a0a0a',
+          850: '#0f0f0f',
+          800: '#151515',
+          700: '#1c1c1c',
+          600: '#262626',
+          500: '#333333',
         },
+        // Accent is an off-white: the design is monochrome, colour comes from the work itself
         accent: {
-          DEFAULT: '#4ea3ff',
-          dim: '#2b6fb3',
+          DEFAULT: '#ecebe7',
+          dim: '#a3a29d',
         },
         signal: '#5fd3a6',
-        // Tailwind's stock slate-500/600 fall below WCAG AA on this
-        // near-black background, so the two dimmest steps are lifted.
+        // Neutral warm greys replace Tailwind's blue-tinted slate. 500 and 600
+        // both stay above WCAG AA (4.5:1) on the #0a0a0a background.
         slate: {
-          500: '#7b8798',
-          600: '#737f90',
+          50: '#fafaf8',
+          100: '#f2f1ed',
+          200: '#e2e1dc',
+          300: '#c9c8c3',
+          400: '#a3a29d',
+          500: '#8f8e88',
+          600: '#7f7e78',
+          700: '#3a3a37',
+          800: '#232321',
         },
       },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+        display: ['"Instrument Serif"', 'ui-serif', 'Georgia', 'serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
       maxWidth: { content: '1180px' },
@@ -41,11 +51,16 @@ export default {
         dash: {
           to: { strokeDashoffset: '-24' },
         },
+        'panel-in': {
+          from: { opacity: '0', transform: 'translateX(-24px)' },
+          to: { opacity: '1', transform: 'translateX(0)' },
+        },
       },
       animation: {
         'fade-up': 'fade-up 0.6s cubic-bezier(0.22,1,0.36,1) both',
         'fade-in': 'fade-in 0.4s ease both',
         dash: 'dash 1.2s linear infinite',
+        'panel-in': 'panel-in 0.5s cubic-bezier(0.22,1,0.36,1) both',
       },
     },
   },
