@@ -28,6 +28,8 @@ export type Project = {
   results?: string[]
   links?: { label: string; href: string }[]
   images?: { src: string; alt: string; caption: string }[]
+  /** Silent screen recordings. The first one also plays as the card's cover. */
+  videos?: { src: string; poster: string; title: string; caption: string }[]
   diagram?: 'luna' | 'lora' | 'eps' | 'fingerprint' | 'stepper' | 'micromouse' | 'homer'
   sections?: DetailSection[]
 }
@@ -203,6 +205,132 @@ export const projects: Project[] = [
           'Payload V2.0 board',
           'HAT base template for daughterboard standardisation',
           'Top, side and general-mounted solar panel boards',
+        ],
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────
+  {
+    slug: 'eyrc-hola-explorer',
+    title: 'Hola The Explorer',
+    subtitle: 'Multi-robot planning and cooperative transport for holonomic robots — e-Yantra Robotics Competition 2026-27',
+    oneLiner:
+      'Three omni-wheel robots that plan from an overhead camera, share an arena without colliding, and carry a payload together as one rigid body.',
+    year: '2026',
+    status: 'active',
+    statusNote: 'Competition in progress — Tasks 1A to 3B solved and submitted',
+    featured: true,
+    summary:
+      'My solutions for the "Hola The Explorer" theme of the e-Yantra Robotics Competition (eYRC 2026-27, IIT Bombay), team 3359. Three-wheel holonomic robots run in a MuJoCo arena under ROS 2 Humble, and the only view of the world is an overhead camera. Across eight tasks the work builds from detecting shapes in one camera frame up to three robots docking on a crate, welding to it and carrying it around randomly placed obstacles onto a target.',
+    problem:
+      'Each task removes a shortcut. Obstacles move to a new random layout every launch, so no route can be hard-coded. The payload’s position is not given anywhere and has to be found in the camera image. Three robots planned independently will all reach the same gap at the same moment. And once three robots are welded to one crate, any one of them that disagrees about where the crate is will fight the other two.',
+    approach:
+      'Everything runs through one pipeline. The camera frame becomes an occupancy grid by HSV-thresholding the sand floor, then freeing the things that look like obstacles but are not: start circles, painted pads, the robots themselves. A* plans on an inflated grid, the zig-zags are straightened with line-of-sight shortcutting, and the result is turned into a timed trajectory that slows for corners and stops. Each robot tracks its trajectory with a PID controller fed through the inverse kinematics of the three-wheel drive. Multiple robots are kept apart in time rather than space: each one gets the earliest start delay that keeps it clear of the robots already scheduled, and every priority order is tried.',
+    technologies: ['ROS 2 Humble', 'Python', 'OpenCV', 'MuJoCo', 'A* search', 'PID control', 'NumPy'],
+    hardware: [
+      'Three-wheel holonomic (omni-wheel) robots ×3',
+      'Overhead arena camera (simulated)',
+      'Solenoid payload attachment',
+    ],
+    software: [
+      'camera_detection.py — trapezoid checkpoint detection with Hough-line corner refinement',
+      'inverse_kinematics.py — body velocity to three wheel speeds',
+      'path_planner.py — occupancy grid, A*, shortcutting, multi-robot scheduling, carry planning',
+      'path_follower.py — timed trajectory tracking, async attach/detach, team coordination',
+    ],
+    features: [
+      'Occupancy grid built from one camera frame by colour, with start circles, pads and robots freed back up',
+      'Obstacle inflation picks the widest safety margin (45 → 10 mm) that still leaves a way through',
+      '8-connected A* with line-of-sight shortcutting checked against a clearance map',
+      'Time-stamped trajectories that slow to 0.15 m/s through bends sharper than 20°',
+      'Multi-robot scheduling by start delay, trying every priority order and keeping the fastest finish',
+      'Payload located in the camera with a parallax correction for its height above the floor',
+      'Non-blocking attach requests that nudge 3 mm closer or further based on why an attach was refused',
+      'Three-robot carry planned as a single point on a grid grown by the whole robots-plus-crate shape',
+    ],
+    contribution:
+      'I wrote the vision, planning and control code for every task submitted under team 3359: the checkpoint detector, the inverse kinematics, the PID tracker, the occupancy-grid planner, the multi-robot scheduler and the cooperative carry. The simulator, arena, robot model and node scaffolding are provided by e-Yantra, IIT Bombay.',
+    results: [
+      'Solutions submitted for all eight tasks, 1A through 3B',
+      'Three robots cross a single gap in a wall of pillars, swapping sides, without coming within one chassis width of each other',
+      'Single-robot payload delivery and return planned fresh from the camera on every randomised layout',
+      'Three-robot cooperative carry: docking, attaching, carrying and releasing a payload onto the hexagon',
+    ],
+    videos: [
+      {
+        src: 'projects/eyantra/task-3b.mp4',
+        poster: 'projects/eyantra/task-3b.webp',
+        title: 'Task 3B — Push together',
+        caption: 'Three robots dock on three sides of the violet crate, attach, carry it as one body onto the hexagon and back away.',
+      },
+      {
+        src: 'projects/eyantra/task-3a.mp4',
+        poster: 'projects/eyantra/task-3a.webp',
+        title: 'Task 3A — Deliver the payload',
+        caption: 'One robot finds the teal crate in the camera, docks, carries it through a random pillar layout to the hexagon and returns home.',
+      },
+      {
+        src: 'projects/eyantra/task-2c.mp4',
+        poster: 'projects/eyantra/task-2c.webp',
+        title: 'Task 2C — Move as a team',
+        caption: 'Three robots swap sides through the single gap in a pillar wall, scheduled in time so they never meet.',
+      },
+      {
+        src: 'projects/eyantra/task-2b.mp4',
+        poster: 'projects/eyantra/task-2b.webp',
+        title: 'Task 2B — Mind the obstacles',
+        caption: 'One robot visits three goals in order on an A* path planned from a single camera frame.',
+      },
+      {
+        src: 'projects/eyantra/task-2a.mp4',
+        poster: 'projects/eyantra/task-2a.webp',
+        title: 'Task 2A — Three robots, three goals',
+        caption: 'Three robots slide to their goals at once, holding heading the whole way — holonomic drive in action.',
+      },
+    ],
+    sections: [
+      {
+        title: 'Holonomic Kinematics & Control',
+        body: 'The robot has three omni-wheels at 120° spacing, so it can translate in any direction while holding or changing heading independently. Inverse kinematics maps a body velocity to the three wheel speeds; a PID controller on position and heading closes the loop on /odom.',
+        bullets: [
+          'wheel_i = (cos aᵢ·vx + sin aᵢ·vy + R·ω) / r, with wheels at 30°, 150° and 270°',
+          'Wheel radius 25.5 mm, chassis radius 64.12 mm; commands clamped to the simulated 30 rad/s limit',
+          'Control loop at 50 Hz, which also feeds the 0.5 s wheel-command watchdog',
+          'Integral terms only build up inside a small zone around the target, to avoid windup on long moves',
+          'The follower aims 0.12 s ahead on the timed path rather than at the current point',
+        ],
+      },
+      {
+        title: 'Perception & Mapping',
+        body: 'There is no map: one overhead camera frame is the whole world model. The arena square is cropped, colour-thresholded into a roughly 1 cm grid, and then corrected, because a naive grid marks the robots, goals and painted floor as obstacles and leaves no path at all.',
+        bullets: [
+          'Sand floor thresholded in HSV; grey and dark regions kept as solid obstacles',
+          'Start circles, the robots and the payload’s painted pad explicitly cleared',
+          'Checkpoints told apart from the similar-sized vaults beside them by counting parallel side pairs',
+          'Payload found by its coloured top; its centroid is pulled towards the camera axis by H / (H − h) to undo parallax',
+        ],
+      },
+      {
+        title: 'Multi-Robot Scheduling',
+        body: 'Planning each robot alone sends all three into the same gap together. Rather than a full space-time search, each robot keeps its own shortest route and the planner decides when it sets off.',
+        bullets: [
+          'In priority order, each robot takes the earliest start delay (0.1 s steps) that keeps it clear of those already scheduled',
+          'Robots still waiting on their start circles and robots parked on their goals count as obstacles too',
+          'Plans compared every 50 ms against a centre-to-centre clearance of 0.22–0.26 m',
+          'All six priority orders are tried; the one that finishes soonest wins',
+          'Waits are written into the path as repeated poses, so the follower holds position instead of treating it as arrival',
+        ],
+      },
+      {
+        title: 'Cooperative Carry',
+        body: 'Once three robots attach, robots and crate move as one rigid body. The planner and the followers both lean on that.',
+        bullets: [
+          'Obstacles are dilated by the combined crate-plus-three-robots footprint, so the crate’s centre plans as a single point',
+          'Each robot approaches a staging point 130 mm out, then runs straight in slowly to dock',
+          'Docking offsets per robot were tuned from the attach service’s replies over many runs',
+          'The three measured attach distances are trilaterated (Gauss–Newton) into a better crate position than the camera gave',
+          'All three followers steer on one shared crate estimate, so no robot pulls against the others',
         ],
       },
     ],

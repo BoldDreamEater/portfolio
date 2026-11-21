@@ -2,7 +2,7 @@ import { profile } from '../data/profile'
 import { projects } from '../data/projects'
 
 const stats = [
-  { value: String(projects.length), label: 'Featured projects' },
+  { value: String(projects.length), label: 'Projects' },
   { value: '9.83', label: 'Diploma CPI / 10' },
   { value: '3', label: 'Years on a satellite team' },
 ]

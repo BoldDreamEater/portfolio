@@ -112,6 +112,33 @@ export function ProjectDetails({ project, onClose }: Props) {
           <Prose title="The problem" body={project.problem} />
           <Prose title="Approach" body={project.approach} />
 
+          {project.videos && project.videos.length > 0 && (
+            <div>
+              <SubHeading>Simulation runs</SubHeading>
+              <div className="grid gap-x-4 gap-y-6 sm:grid-cols-2">
+                {project.videos.map((v, i) => (
+                  <figure key={v.src} className={`m-0 ${i === 0 ? 'sm:col-span-2' : ''}`}>
+                    <video
+                      src={`${import.meta.env.BASE_URL}${v.src}`}
+                      poster={`${import.meta.env.BASE_URL}${v.poster}`}
+                      controls
+                      muted
+                      loop
+                      playsInline
+                      preload="none"
+                      aria-label={v.title}
+                      className="aspect-square w-full rounded-lg border border-white/[0.07] bg-ink-900 object-cover"
+                    />
+                    <figcaption className="mt-2.5">
+                      <span className="block text-[13.5px] font-medium text-slate-200">{v.title}</span>
+                      <span className="mt-0.5 block text-xs leading-relaxed text-slate-500">{v.caption}</span>
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
+            </div>
+          )}
+
           {project.images && project.images.length > 0 && (
             <div>
               <SubHeading>Project photographs</SubHeading>
