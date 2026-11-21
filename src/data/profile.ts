@@ -194,7 +194,7 @@ export const skillCategories: SkillCategory[] = [
       { name: 'KiCad (v7–v9)', level: 'core' },
       { name: 'Hierarchical schematic design', level: 'core' },
       { name: 'Mixed-signal PCB layout', level: 'core' },
-      { name: 'Power electronics (buck, MPPT, ORing)', level: 'core' },
+      { name: 'Power electronics (buck converters, load switching)', level: 'core' },
       { name: 'Li-ion charging & fuel gauging', level: 'core' },
       { name: 'DFM / fabrication output', level: 'core' },
       { name: 'Autodesk Eagle', level: 'working' },

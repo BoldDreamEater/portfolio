@@ -32,7 +32,7 @@ export type Project = {
   imagesHeading?: string
   /** Silent screen recordings. The first one also plays as the card's cover. */
   videos?: { src: string; poster: string; title: string; caption: string }[]
-  diagram?: 'luna' | 'lora' | 'eps' | 'fingerprint' | 'stepper' | 'micromouse' | 'homer'
+  diagram?: 'luna' | 'lora' | 'fingerprint' | 'stepper' | 'micromouse' | 'homer'
   sections?: DetailSection[]
 }
 
@@ -148,60 +148,45 @@ export const projects: Project[] = [
   {
     slug: 'nanosat-eps',
     title: 'Nano-Satellite Electrical Power System',
-    subtitle: 'CubeSat-class EPS motherboard and power subsystem boards',
+    subtitle: 'Power and subsystem boards for a CubeSat-class student satellite',
     oneLiner:
-      'Solar power conditioning, battery management and switched power distribution for a student satellite.',
+      'Battery charging, power distribution, reaction-wheel drive and payload boards for a student satellite.',
     year: '2023 — 2025',
     status: 'archived',
     statusNote: 'Team programme — my contribution ran Dec 2023 to Nov 2025',
     featured: true,
-    diagram: 'eps',
     summary:
-      'The Electrical Power System for the SS AMU SAT student satellite: a multi-sheet KiCad motherboard handling solar input conditioning, battery charging, power path arbitration and independently switched rails for each satellite subsystem, alongside a family of supporting boards.',
+      'Boards from the Electrical Power System team of the SS AMU SAT student satellite: a battery charger with fuel gauging, a backplane that distributes regulated rails between subsystem cards, a carrier for the reaction-wheel motor controllers, a CAN-connected payload board and the solar panel boards. Each board went through several revisions in KiCad.',
     problem:
-      'A satellite has one non-negotiable subsystem. If power fails, nothing else matters — the spacecraft is unrecoverable. The EPS must harvest from solar panels whose output swings wildly with orientation and eclipse, keep a battery healthy across thousands of charge cycles, and guarantee that a fault in any one subsystem cannot pull down the rest.',
+      'A satellite has one non-negotiable subsystem. If power fails, nothing else matters — the spacecraft is unrecoverable. The power boards must keep a battery healthy across thousands of charge cycles, deliver clean regulated rails to every card, and make sure a fault on one card cannot pull down the rest.',
     approach:
-      'The design is built as a hierarchical schematic, one sheet per functional block, so each subsystem can be reviewed and validated in isolation. Solar input is handled across twelve MPPT channels. Power path arbitration between solar and battery uses ideal-diode ORing controllers rather than plain diodes, avoiding the forward-drop loss that matters at satellite power budgets. Each downstream subsystem — ADCS, communications, payload — sits behind its own switched and boosted rail so it can be isolated or power-cycled independently.',
-    technologies: ['KiCad 7', 'Hierarchical schematic design', 'Power electronics', 'DFM'],
+      'The system is split into cards that plug into a shared backplane, so each board can be designed, reviewed and replaced on its own. The battery charger pairs a buck-boost charger with a dedicated fuel gauge, so charge state is measured rather than guessed. Loads sit behind current-limited switches, so a shorted card is cut off rather than dragging down the bus. The backplane steps the 12 V input down to 5 V and 3.3 V and carries power and signals between the cards.',
+    technologies: ['KiCad 7', 'Hierarchical schematic design', 'Power electronics', 'CAN bus', 'DFM'],
     hardware: [
-      'STM32H743ZGT6 microcontroller',
-      '12-channel MPPT solar input',
-      'LTC4415 ideal-diode ORing controller',
-      'L6981N synchronous buck regulator',
-      'M41T0M6F real-time clock',
-      'Independent boost rails for ADCS, COM and payload',
-      'ESD protection on external interfaces',
+      'BQ25798 buck-boost battery charger',
+      'STC3100 battery fuel gauge',
+      'TPS2557 current-limited load switch',
+      'XL4015 buck converters',
+      'maxon ESCON Module 24/2 motor controllers',
+      'MCP2515 CAN controller + L9615 transceiver',
     ],
     software: ['KiCad schematic capture and layout', 'Git version control'],
     features: [
-      'Twelve MPPT channels for distributed solar panel harvesting',
-      'Ideal-diode power path ORing between solar and battery sources',
-      'Per-subsystem switched rails: ADCS, communications and payload isolated separately',
-      'Dedicated step-up converters sized per subsystem rather than one shared rail',
-      'Battery-backed real-time clock for timekeeping across power events',
-      'Board family spans EPS motherboard, battery charger, backplane, ADCS, payload and solar panel boards',
+      'Battery charging with a buck-boost charger and a separate fuel gauge for state-of-charge',
+      'Current-limited load switching, so a faulty card is isolated instead of collapsing the bus',
+      'Backplane with two buck rails (12 V → 5 V and 12 V → 3.3 V) and stacking connectors for each card',
+      'Carrier for three ESCON motor controllers driving the ADCS reaction wheels, with TVS and fuse protection',
+      'Payload board on the CAN bus through an MCP2515 controller and L9615 transceiver',
+      'Board family spans battery charger, backplane, ADCS, payload and solar panel boards',
     ],
     contribution:
       'I joined as an EPS Team Member and was promoted to EPS Designer L2 based on technical contribution and subsystem responsibility. I contributed to the design, analysis and validation of the power system, and delivered a KiCad PCB design workshop to train other members of the satellite team. This is a multi-year team programme — the board family as a whole is the work of the EPS team, not of any one person.',
     sections: [
       {
-        title: 'Hardware Architecture',
-        body: 'The motherboard is organised as one schematic sheet per functional block, which keeps a complex mixed-signal power design reviewable.',
+        title: 'Board Family',
+        body: 'The boards are held in one repository and plug together through the backplane.',
         bullets: [
-          'microcontroller — STM32H743 supervisor with debug and boot configuration',
-          'mppt — twelve maximum power point tracking channels for the solar array',
-          'oring_diode — ideal-diode source arbitration between solar and battery',
-          'solar_connector — panel interface and input protection',
-          'step_up_adcs / step_up_subsystem — independently sized boost rails',
-          'switch_adcs / switch_com / switch_payload — per-subsystem load switching',
-          'real_time_clock — battery-backed timekeeping',
-        ],
-      },
-      {
-        title: 'Supporting Boards',
-        body: 'The EPS motherboard sits inside a larger board family developed by the team, all held in the same repository.',
-        bullets: [
-          'Battery Charger V2.0 and battery terminal board',
+          'Battery Charger V2.2 and battery terminal board',
           'Backplane V3 — inter-board power and signal distribution',
           'ADCS boards including ESCON motor driver revisions V2.3 through V2.5',
           'Payload V2.0 board',
@@ -212,11 +197,6 @@ export const projects: Project[] = [
     ],
     imagesHeading: 'Board renders',
     images: [
-      {
-        src: 'projects/eps/motherboard.webp',
-        alt: '3D render of the EPS motherboard, a long narrow board with an STM32 microcontroller at its centre',
-        caption: 'EPS motherboard — STM32H743 supervisor, twelve MPPT channels and LTC4415 ideal-diode ORing',
-      },
       {
         src: 'projects/eps/battery-charger.webp',
         alt: '3D render of the battery charger board with a large card-edge connector along one side',
@@ -240,7 +220,7 @@ export const projects: Project[] = [
       {
         src: 'projects/eps/solar-panel.webp',
         alt: '3D render of a long solar panel PCB divided into a string of cell pads',
-        caption: 'Top-mounted solar panel board — the series cell string that feeds the MPPT inputs',
+        caption: 'Top-mounted solar panel board — a series string of solar cells',
       },
     ],
   },

@@ -195,35 +195,6 @@ function LoraDiagram() {
   )
 }
 
-function EpsDiagram() {
-  return (
-    <Frame
-      viewBox="0 0 640 250"
-      caption="Satellite EPS power path. Solar harvesting feeds MPPT conversion, ideal-diode ORing arbitrates between solar and battery, and each subsystem sits behind its own switched rail so a fault cannot pull down the others."
-    >
-      <Box x={16} y={92} w={96} h={52} label="Solar array" sub="panels" tone="signal" />
-      <Box x={140} y={92} w={104} h={52} label="MPPT" sub="12 channels" tone="accent" />
-      <Box x={272} y={40} w={104} h={48} label="Battery" sub="charger" tone="signal" />
-      <Box x={272} y={108} w={104} h={52} label="ORing" sub="ideal diode" tone="accent" />
-
-      <Box x={432} y={24} w={188} h={42} label="ADCS rail" sub="boost + switch" />
-      <Box x={432} y={78} w={188} h={42} label="COM rail" sub="boost + switch" />
-      <Box x={432} y={132} w={188} h={42} label="Payload rail" sub="boost + switch" />
-      <Box x={432} y={186} w={188} h={42} label="STM32H743" sub="supervisor + RTC" tone="accent" />
-
-      <Arrow d="M112 118 H134" tone="signal" />
-      <Arrow d="M244 118 H266" tone="accent" />
-      <Arrow d="M244 110 V64 H266" tone="signal" />
-      <Arrow d="M324 88 V104" />
-
-      <Arrow d="M376 128 H406 V45 H426" tone="accent" />
-      <Arrow d="M406 99 H426" tone="accent" />
-      <Arrow d="M406 153 H426" tone="accent" />
-      <Arrow d="M406 128 V207 H426" tone="accent" />
-    </Frame>
-  )
-}
-
 function FingerprintDiagram() {
   return (
     <Frame
@@ -335,7 +306,6 @@ const MAP = {
   luna: LunaDiagram,
   homer: HomerDiagram,
   lora: LoraDiagram,
-  eps: EpsDiagram,
   fingerprint: FingerprintDiagram,
   stepper: StepperDiagram,
   micromouse: MicromouseDiagram,
